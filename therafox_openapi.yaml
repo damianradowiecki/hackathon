@@ -8,7 +8,7 @@ servers:
 paths:
   /check/patient:
     post:
-      summary: Check interactions between medications
+      summary: This plugin allows you to check interactions between medications for a patient. The medications must be provided as PIC codes. It analyzes the provided medications and returns information about potential interactions, their severity, and other relevant details. Use this API to ensure safe medication combinations for patients.
       description: |
         Bla bla bla
       operationId: checkInteractions

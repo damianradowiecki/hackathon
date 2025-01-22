@@ -90,6 +90,9 @@ components:
         type:
           type: string
           example: "PIC"
+      required:
+        - id
+        - type
 
     PatientCheckResponse:
       type: object

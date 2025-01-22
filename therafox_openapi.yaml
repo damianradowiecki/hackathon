@@ -1,0 +1,236 @@
+openapi: 3.0.1
+info:
+  title: Therafox Patient Check API
+  description: API for checking patient medications and interactions
+  version: 1.0.0
+servers:
+  - url: https://therafox-pilot.api.ifap.de/api/v3
+paths:
+  /check/patient:
+    post:
+      summary: Check interactions between medications
+      operationId: checkInteractions
+      tags:
+        - Patient Check
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatientCheckRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientCheckResponse'
+      security:
+        - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    PatientCheckRequest:
+      type: object
+      properties:
+        textType:
+          type: string
+          example: "LAYMAN"
+          default: "LAYMAN"
+        patientInformation:
+          $ref: '#/components/schemas/PatientInformation'
+        medications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Medication'
+        includeChecks:
+          type: array
+          items:
+            type: string
+          example: ["INTERACTION"]
+          default: ["INTERACTION"]
+        sourceRequest:
+          type: string
+          example: "Source request"
+          default: "Source request"
+      required:
+        - textType
+        - patientInformation
+        - medications
+        - includeChecks
+        - sourceRequest
+
+    PatientInformation:
+      type: object
+      properties:
+        indications:
+          type: array
+          items:
+            type: string
+          example: []
+        detailedIndications:
+          type: array
+          items:
+            type: string
+          example: []
+      example:
+        indications: []
+        detailedIndications: []
+
+    Medication:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "167792"
+        type:
+          type: string
+          example: "PIC"
+
+    PatientCheckResponse:
+      type: object
+      properties:
+        uuid:
+          type: string
+          example: "ae6adbd3-1557-48a2-9430-4d12457143e2"
+        timestamp:
+          type: integer
+          example: 1737532054768
+        endTimestamp:
+          type: integer
+          example: 1737532054786
+        highestScore:
+          type: integer
+          example: 13
+        approvedWithNoRisk:
+          type: boolean
+          example: false
+        checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Check'
+        callableChecks:
+          type: array
+          items:
+            type: string
+          example: ["INTERACTION"]
+        dictionary:
+          $ref: '#/components/schemas/Dictionary'
+
+    Check:
+      type: object
+      properties:
+        position:
+          type: string
+          example: "1000002.D8"
+        medication:
+          $ref: '#/components/schemas/MedicationDetails'
+        checkType:
+          type: string
+          example: "INTERACTION"
+        groupType:
+          type: string
+          example: "INTERACTIONS"
+        severity:
+          type: string
+          example: "WARNING"
+        personalized:
+          type: boolean
+          example: true
+        score:
+          type: integer
+          example: 13
+        interactionId:
+          type: integer
+          example: 7634
+        interactionDescription:
+          type: string
+          example: "Digitalis-Glykoside / Calcium-Salze, parenteral"
+        medicationPartner:
+          $ref: '#/components/schemas/MedicationDetails'
+        checkDetail:
+          $ref: '#/components/schemas/CheckDetail'
+        direction:
+          type: boolean
+          example: false
+
+    MedicationDetails:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "167792"
+        type:
+          type: string
+          example: "PIC"
+        applicationRoute:
+          type: string
+          example: "0"
+
+    CheckDetail:
+      type: object
+      properties:
+        laymanText:
+          $ref: '#/components/schemas/LaymanText'
+
+    LaymanText:
+      type: object
+      properties:
+        effectText:
+          type: string
+          example: "Bei Kombination der Arzneimittel können Nebenwirkungen verstärkt auftreten.<br><br>"
+        mechanismText:
+          type: string
+          example: "Eine erhöhte Menge von Calcium im Blut kann die Wirksamkeit von bestimmten Herzmedikamenten (sog. Digitalis-Glykosiden) verstärken."
+
+    Dictionary:
+      type: object
+      properties:
+        PIC:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/DictionaryItem'
+
+    DictionaryItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "1437555"
+        description:
+          type: string
+          example: "Lanitop"
+        type:
+          type: string
+          example: "PIC"
+        applicationRoute:
+          type: string
+          example: "0"
+        name:
+          type: string
+          example: "Lanitop N1 TAB Esteve Pharmaceuticals GmbH"
+        norm:
+          type: string
+          example: "N1"
+        dosageForm:
+          type: string
+          example: "TAB"
+        dosageFormLong:
+          type: string
+          example: "Tabletten"
+        amount:
+          type: string
+          example: "50"
+        amountUnit:
+          type: string
+          example: "ST"
+        vendor:
+          type: string
+          example: "Esteve Pharmaceuticals GmbH"
+        activeSubstances:
+          type: string
+          example: "Metildigoxin"

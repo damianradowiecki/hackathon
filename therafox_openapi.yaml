@@ -9,6 +9,8 @@ paths:
   /check/patient:
     post:
       summary: Check interactions between medications
+      description: |
+        Bla bla bla
       operationId: checkInteractions
       tags:
         - Patient Check
@@ -36,9 +38,13 @@ components:
   schemas:
     PatientCheckRequest:
       type: object
+      description: |
+        test desc
       properties:
         textType:
           type: string
+          description: |
+            testing prop
           example: "LAYMAN"
           default: "LAYMAN"
         patientInformation:
